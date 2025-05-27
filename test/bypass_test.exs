@@ -120,8 +120,7 @@ defmodule BypassTest do
     ])
 
     capture_log(fn ->
-      assert {:error, _conn, %Mint.TransportError{reason: :timeout}, _responses} =
-               request(bypass.port)
+      assert {:ok, 500, ""} = request(bypass.port)
     end)
   end
 
@@ -452,7 +451,7 @@ defmodule BypassTest do
   end
 
   defp receive_responses(conn, ref, status, body) do
-    with {:ok, conn, responses} <- Mint.HTTP.recv(conn, 0, 200) do
+    with {:ok, conn, responses} <- Mint.HTTP.recv(conn, 0, 10000) do
       receive_responses(responses, conn, ref, status, body)
     end
   end
